@@ -1,0 +1,25 @@
+name: Waystonez
+version: '1.0.0-SPIGOT'
+main: de.emn4tor.WaystonePlugin
+api-version: '1.21'
+description: A plugin that adds waystones for teleportation
+author: Emn4tor
+
+
+commands:
+  waystone:
+    description: Main command for the Waystones plugin
+    usage: /waystone [list|help|give]
+    aliases: [ws]
+    permission: waystones.use
+
+permissions:
+  waystones.use:
+    description: Allows using waystones
+    default: true
+  waystones.admin:
+    description: Allows administrative access to waystones
+    default: op
+    children:
+      waystones.use: true
+

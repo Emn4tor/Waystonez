@@ -1,0 +1,32 @@
+# Waystones Configuration
+
+# Database settings
+database:
+  # The type of database to use (sqlite or mysql)
+  type: sqlite
+
+  # MySQL settings (only used if type is mysql)
+  mysql:
+    host: localhost
+    port: 3306
+    database: waystones
+    username: root
+    password: password
+
+# Waystone settings
+waystones:
+  # Maximum number of waystones a player can own (0 for unlimited)
+  max-per-player: 0
+
+  # Whether players can use waystones they don't own
+  allow-using-others: true
+
+  # Whether to show particles at waystones
+  show-particles: true
+
+  # Whether to play sounds when using waystones
+  play-sounds: true
+
+  # Cooldown between teleports (in seconds)
+  teleport-cooldown: 30
+
