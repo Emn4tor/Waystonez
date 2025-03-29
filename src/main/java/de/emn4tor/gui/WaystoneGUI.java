@@ -22,24 +22,31 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class WaystoneGUI implements Listener {
 
     private final WaystonePlugin plugin;
-    private final Player player;
+    private final UUID playerUUID;
     private final WaystoneManager waystoneManager;
     private Inventory inventory;
 
-    public WaystoneGUI(WaystonePlugin plugin, Player player) {
+    public WaystoneGUI(WaystonePlugin plugin, UUID playerUUID) {
         this.plugin = plugin;
-        this.player = player;
+        this.playerUUID = playerUUID;
         this.waystoneManager = plugin.getWaystoneManager();
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     public void open() {
-        List<Waystone> waystones = waystoneManager.getPlayerWaystones(player.getUniqueId());
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player == null) {
+            HandlerList.unregisterAll(this);
+            return;
+        }
+
+        List<Waystone> waystones = waystoneManager.getPlayerWaystones(playerUUID);
         int size = Math.min(54, ((waystones.size() + 8) / 9) * 9); // Round up to nearest multiple of 9
 
         inventory = Bukkit.createInventory(player, size, "Your Waystones");
@@ -73,15 +80,19 @@ public class WaystoneGUI implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory() != inventory) return;
-
         event.setCancelled(true);
 
         if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR) return;
 
         ItemStack clickedItem = event.getCurrentItem();
         ItemMeta meta = clickedItem.getItemMeta();
-
         if (meta == null) return;
+
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player == null) {
+            HandlerList.unregisterAll(this);
+            return;
+        }
 
         // Get the waystone ID from the item's NBT
         if (meta.getPersistentDataContainer().has(plugin.getWaystoneKey(), org.bukkit.persistence.PersistentDataType.INTEGER)) {
@@ -90,10 +101,7 @@ public class WaystoneGUI implements Listener {
                     org.bukkit.persistence.PersistentDataType.INTEGER
             );
 
-            // Close the inventory
             player.closeInventory();
-
-            // Teleport the player to the waystone
             waystoneManager.teleportToWaystone(player, waystoneId);
         }
     }
@@ -101,9 +109,7 @@ public class WaystoneGUI implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getInventory() == inventory) {
-            // Unregister this listener when the inventory is closed
             HandlerList.unregisterAll(this);
         }
     }
 }
-

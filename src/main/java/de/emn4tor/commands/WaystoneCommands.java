@@ -8,7 +8,6 @@ package de.emn4tor.commands;
 import de.emn4tor.WaystonePlugin;
 import de.emn4tor.WaystoneRecipe;
 import de.emn4tor.gui.WaystoneGUI;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,11 +29,9 @@ public class WaystoneCommands implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            // Open the waystone GUI
-            new WaystoneGUI(plugin, player).open();
+            openWaystoneGUI(player);
             return true;
         }
-
 
         String subCommand = args[0].toLowerCase();
 
@@ -44,7 +41,7 @@ public class WaystoneCommands implements CommandExecutor {
                 break;
 
             case "list":
-                new WaystoneGUI(plugin, player).open();
+                openWaystoneGUI(player);
                 break;
 
             case "give":
@@ -61,7 +58,11 @@ public class WaystoneCommands implements CommandExecutor {
                 break;
         }
 
-        return false;
+        return true;
+    }
+
+    private void openWaystoneGUI(Player player) {
+        new WaystoneGUI(plugin, player.getUniqueId()).open();
     }
 
     private void sendHelpMessage(Player player) {
@@ -75,4 +76,3 @@ public class WaystoneCommands implements CommandExecutor {
         }
     }
 }
-

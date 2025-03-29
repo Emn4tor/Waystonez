@@ -127,7 +127,7 @@ public class WaystoneListener implements Listener {
                 waystoneManager.discoverWaystone(player, waystone.getId());
 
                 // Open the waystone GUI
-                new WaystoneGUI(plugin, player).open();
+                new WaystoneGUI(plugin, player.getUniqueId()).open();
             }
         }
     }
