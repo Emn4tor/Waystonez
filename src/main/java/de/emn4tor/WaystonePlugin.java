@@ -2,6 +2,7 @@ package de.emn4tor;
 
 import de.emn4tor.commands.WaystoneCommands;
 import de.emn4tor.database.DatabaseManager;
+import de.emn4tor.listeners.PlayerJoinListener;
 import de.emn4tor.listeners.WaystoneListener;
 import de.emn4tor.managers.WaystoneManager;
 import org.bukkit.Bukkit;
@@ -35,6 +36,8 @@ public class WaystonePlugin extends JavaPlugin {
 
         //events
         Bukkit.getPluginManager().registerEvents(new WaystoneListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+
 
         //commands
         getCommand("waystone").setExecutor(new WaystoneCommands(this));

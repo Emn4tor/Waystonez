@@ -30,3 +30,7 @@ waystones:
   # Cooldown between teleports (in seconds)
   teleport-cooldown: 30
 
+
+  # How many waystones a player gets on their first join (0 for none)
+  first-join-waystones: 0
+

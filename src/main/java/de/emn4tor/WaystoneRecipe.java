@@ -29,7 +29,7 @@ public class WaystoneRecipe {
         lore.add("§7Right-click to teleport between waypoints");
         meta.setLore(lore);
 
-        // Add custom tag to identify this as waystone
+        // Add custom tag
         meta.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) 1);
 
         waystoneItem.setItemMeta(meta);
@@ -42,7 +42,9 @@ public class WaystoneRecipe {
                 "GSE");
         recipe.setIngredient('S', Material.STONE_BRICKS);
         recipe.setIngredient('D', Material.DIAMOND);
-        recipe.
+        recipe.setIngredient('G', Material.GOLD_INGOT);
+        recipe.setIngredient('N', Material.NETHERITE_INGOT);
+        recipe.setIngredient('E', Material.EMERALD_BLOCK);
         recipe.setIngredient('P', Material.ENDER_PEARL);
 
         // Register recipe
@@ -59,7 +61,7 @@ public class WaystoneRecipe {
         lore.add("§7Right-click to teleport between waypoints");
         meta.setLore(lore);
 
-        // Add custom tag to identify as waystone
+        // Add custom tag
         meta.getPersistentDataContainer().set(plugin.getWaystoneKey(), PersistentDataType.BYTE, (byte) 1);
 
         waystoneItem.setItemMeta(meta);

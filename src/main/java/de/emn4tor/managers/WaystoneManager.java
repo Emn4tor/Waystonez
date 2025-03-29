@@ -16,11 +16,15 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class WaystoneManager {
 
     private final WaystonePlugin plugin;
     private final DatabaseManager databaseManager;
+    private final Map<UUID, Long> cooldowns = new HashMap<>();
 
     public WaystoneManager(WaystonePlugin plugin) {
         this.plugin = plugin;
@@ -64,6 +68,13 @@ public class WaystoneManager {
     }
 
     public void teleportToWaystone(Player player, int waystoneId) {
+        // Check if player is on cooldown
+        if (isOnCooldown(player.getUniqueId())) {
+            int remainingSeconds = getRemainingCooldown(player.getUniqueId());
+            player.sendMessage("§cYou must wait §e" + remainingSeconds + " seconds §cbefore teleporting again!");
+            return;
+        }
+
         getWaystone(waystoneId).ifPresent(waystone -> {
             // Play departure effects
             SoundUtils.playWaystoneTeleportSound(player.getLocation());
@@ -76,8 +87,68 @@ public class WaystoneManager {
             SoundUtils.playWaystoneTeleportSound(player.getLocation());
             SoundUtils.spawnWaystoneTeleportParticles(player.getLocation());
 
+            // Set cooldown
+            setCooldown(player.getUniqueId());
+
             player.sendMessage("§6Teleported to §e" + waystone.getName() + "§6!");
         });
     }
+
+    /**
+     * Check if a player is on cooldown
+     */
+    private boolean isOnCooldown(UUID playerUUID) {
+        if (!cooldowns.containsKey(playerUUID)) {
+            return false;
+        }
+
+        // Get the cooldown time from config
+        int cooldownSeconds = plugin.getConfig().getInt("waystones.teleport-cooldown", 60);
+
+        // Get the time when the cooldown expires
+        long cooldownExpiration = cooldowns.get(playerUUID) + (cooldownSeconds * 1000L);
+
+        // Check if the cooldown has expired
+        if (System.currentTimeMillis() >= cooldownExpiration) {
+            cooldowns.remove(playerUUID);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the remaining cooldown time in seconds
+     */
+    private int getRemainingCooldown(UUID playerUUID) {
+        if (!cooldowns.containsKey(playerUUID)) {
+            return 0;
+        }
+
+        // Get the cooldown time from config
+        int cooldownSeconds = plugin.getConfig().getInt("waystones.teleport-cooldown", 60);
+
+        // Get the time when the cooldown expires
+        long cooldownExpiration = cooldowns.get(playerUUID) + (cooldownSeconds * 1000L);
+
+        // Calculate remaining time
+        long remainingMillis = cooldownExpiration - System.currentTimeMillis();
+
+        if (remainingMillis <= 0) {
+            cooldowns.remove(playerUUID);
+            return 0;
+        }
+
+        return (int) (remainingMillis / 1000);
+    }
+
+    /**
+     * Set a player on cooldown
+     */
+    private void setCooldown(UUID playerUUID) {
+        cooldowns.put(playerUUID, System.currentTimeMillis());
+    }
 }
+
+
 

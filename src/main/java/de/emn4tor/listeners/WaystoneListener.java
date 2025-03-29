@@ -11,6 +11,7 @@ import de.emn4tor.gui.WaystoneGUI;
 import de.emn4tor.managers.WaystoneManager;
 import de.emn4tor.models.Waystone;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class WaystoneListener implements Listener {
@@ -77,6 +80,26 @@ public class WaystoneListener implements Listener {
                 // Delete the waystone from the database
                 waystoneManager.deleteWaystone(waystone.getId());
                 player.sendMessage("§6Waystone §e" + waystone.getName() + " §6destroyed!");
+
+
+                event.setDropItems(false);
+
+                // Drop the waystone item
+                ItemStack waystoneItem = new ItemStack(Material.LODESTONE);
+                ItemMeta meta = waystoneItem.getItemMeta();
+                meta.setDisplayName("§6Waystone");
+
+                List<String> lore = new ArrayList<>();
+                lore.add("§7Place to create a waypoint");
+                lore.add("§7Right-click to teleport between waypoints");
+                meta.setLore(lore);
+
+                // Add custom tag
+                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "waystone"), PersistentDataType.BYTE, (byte) 1);
+
+                waystoneItem.setItemMeta(meta);
+
+                block.getWorld().dropItemNaturally(block.getLocation(), waystoneItem);
             }
         }
     }
