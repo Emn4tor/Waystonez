@@ -24,12 +24,10 @@ public class WaystoneCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§cThis command can only be used by players.");
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length == 0) {
             // Open the waystone GUI
@@ -37,33 +35,30 @@ public class WaystoneCommands implements CommandExecutor {
             return true;
         }
 
-        if (args.length >= 1) {
-            String subCommand = args[0].toLowerCase();
 
-            switch (subCommand) {
-                case "help":
-                    sendHelpMessage(player);
-                    break;
+        String subCommand = args[0].toLowerCase();
 
-                case "list":
-                    new WaystoneGUI(plugin, player).open();
-                    break;
+        switch (subCommand) {
+            case "help":
+                sendHelpMessage(player);
+                break;
 
-                case "give":
-                    if (player.hasPermission("waystones.admin")) {
-                        player.getInventory().addItem(WaystoneRecipe.createWaystoneItem(plugin));
-                        player.sendMessage("§6You received a Waystone item.");
-                    } else {
-                        player.sendMessage("§cYou don't have permission to use this command.");
-                    }
-                    break;
+            case "list":
+                new WaystoneGUI(plugin, player).open();
+                break;
 
-                default:
-                    player.sendMessage("§cUnknown subcommand. Use /waystone help for a list of commands.");
-                    break;
-            }
+            case "give":
+                if (player.hasPermission("waystones.admin")) {
+                    player.getInventory().addItem(WaystoneRecipe.createWaystoneItem(plugin));
+                    player.sendMessage("§6You received a Waystone item.");
+                } else {
+                    player.sendMessage("§cYou don't have permission to use this command.");
+                }
+                break;
 
-            return true;
+            default:
+                player.sendMessage("§cUnknown subcommand. Use /waystone help for a list of commands.");
+                break;
         }
 
         return false;
