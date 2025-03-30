@@ -5,9 +5,15 @@ import de.emn4tor.database.DatabaseManager;
 import de.emn4tor.listeners.PlayerJoinListener;
 import de.emn4tor.listeners.WaystoneListener;
 import de.emn4tor.managers.WaystoneManager;
+import de.emn4tor.gui.WaystoneGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.UUID;
 
 public class WaystonePlugin extends JavaPlugin {
 
@@ -19,6 +25,9 @@ public class WaystonePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        getServer().getPluginManager().registerEvents((Listener) this, this);
+
 
         // Create config
         saveDefaultConfig();
@@ -43,6 +52,12 @@ public class WaystonePlugin extends JavaPlugin {
         getCommand("waystone").setExecutor(new WaystoneCommands(this));
 
         getLogger().info("WaystonePlugin has been enabled!");
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID playerUUID = event.getPlayer().getUniqueId();
+        WaystoneGUI.cleanupUUID(playerUUID);
     }
 
     @Override
