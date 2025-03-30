@@ -26,9 +26,6 @@ public class WaystonePlugin extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        getServer().getPluginManager().registerEvents((Listener) this, this);
-
-
         // Create config
         saveDefaultConfig();
 
@@ -54,11 +51,6 @@ public class WaystonePlugin extends JavaPlugin {
         getLogger().info("WaystonePlugin has been enabled!");
     }
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        UUID playerUUID = event.getPlayer().getUniqueId();
-        WaystoneGUI.cleanupUUID(playerUUID);
-    }
 
     @Override
     public void onDisable() {
