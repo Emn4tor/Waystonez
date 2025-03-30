@@ -9,6 +9,7 @@ import de.emn4tor.gui.WaystoneGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,10 +44,13 @@ public class WaystonePlugin extends JavaPlugin {
         //events
         Bukkit.getPluginManager().registerEvents(new WaystoneListener(this), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new WaystoneGUI(this), this);
 
 
         //commands
         getCommand("waystone").setExecutor(new WaystoneCommands(this));
+
+
 
         getLogger().info("WaystonePlugin has been enabled!");
     }
@@ -54,7 +58,7 @@ public class WaystonePlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Close database conn
+        HandlerList.unregisterAll(this);
         if (databaseManager != null) {
             databaseManager.close();
         }
@@ -77,4 +81,6 @@ public class WaystonePlugin extends JavaPlugin {
     public NamespacedKey getWaystoneKey() {
         return waystoneKey;
     }
+
+
 }

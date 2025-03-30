@@ -62,7 +62,7 @@ public class WaystoneCommands implements CommandExecutor {
     }
 
     private void openWaystoneGUI(Player player) {
-        new WaystoneGUI(plugin, player.getUniqueId()).open();
+        WaystoneGUI.open(player);
     }
 
     private void sendHelpMessage(Player player) {
